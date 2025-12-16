@@ -25,29 +25,31 @@ export class AuthService {
 
   async login(email: string, password: string, photo: File): Promise<any> {
     const formData = new FormData();
-    formData.append("email", email);
-    formData.append("password", password);
-    formData.append("photo", photo);
-
+  
+    formData.append('email', email.trim());
+    formData.append('password', password);
+  
+    if (photo instanceof File) {
+      formData.append('photo', photo); 
+    }
+  
     const response: any = await firstValueFrom(
       this.http.post(`${this.apiUrl}/login`, formData)
     );
-
-    console.log("LOGIN RESPONSE:", response);
-
-    localStorage.setItem("currentUser", JSON.stringify(response));
-    localStorage.setItem("userId", response.user.id);
-    localStorage.setItem("userRole", response.user.role);
-
+  
+    console.log('LOGIN RESPONSE:', response);
+  
+    const user = response.user || response.employee;
+  
+    localStorage.setItem('currentUser', JSON.stringify(response));
+    localStorage.setItem('userId', user.id.toString());
+    localStorage.setItem('userRole', user.role);
+  
     this.currentUserSubject.next(response);
+  
     return response;
   }
-
-  async register(employeeData: any): Promise<any> {
-    return await firstValueFrom(
-      this.http.post(`${this.apiUrl}/register`, employeeData)
-    );
-  }
+  
 
   async logout(): Promise<void> {
     await firstValueFrom(this.http.post(`${this.apiUrl}/logout`, {}));

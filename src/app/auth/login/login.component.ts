@@ -137,33 +137,45 @@ export class LoginComponent implements AfterViewInit {
   
   async onLogin() {
     this.errorMessage = '';
-
-    if (!this.email || !this.password || !this.photoCaptured) {
-      this.errorMessage = 'Email, password and photo are required';
+  
+    // 🔒 Basic validation
+    if (!this.email || !this.password) {
+      this.errorMessage = 'Email and password are required';
       return;
     }
-
+  
+    // Photo is mandatory (as per your requirement)
+    if (!this.photoCaptured || !this.photoFile) {
+      this.errorMessage = 'Photo is required for login';
+      return;
+    }
+  
     this.loading = true;
-
+  
     try {
       const result = await this.authService.login(
-        this.email,
+        this.email.trim(),       // avoid hidden spaces
         this.password,
-        this.photoFile
+        this.photoFile           // must be File object
       );
-
-      if (result.employee.role === 'admin') {
+  
+      if (result?.employee?.role === 'admin') {
         this.router.navigate(['/admin']);
       } else {
         this.router.navigate(['/employee']);
       }
-
+  
     } catch (error: any) {
-      this.errorMessage = error?.message || 'Login failed';
+      this.errorMessage =
+        error?.error?.error ||
+        error?.message ||
+        'Invalid email or password';
+  
     } finally {
       this.loading = false;
     }
   }
+  
 
   resetCamera() {
     this.photoCaptured = false;
