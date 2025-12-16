@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { FormsModule } from '@angular/forms';
@@ -10,91 +10,128 @@ import { CommonModule } from '@angular/common';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent {
+export class LoginComponent implements AfterViewInit {
 
   email = '';
   password = '';
   errorMessage = '';
   loading = false;
-
   photoFile!: File;
   photoPreview: string | null = null;
-
   cameraStarted = false;
   photoCaptured = false;
   stream!: MediaStream;
   isCameraReady = false;
-
-
-  @ViewChild('video') video!: ElementRef<HTMLVideoElement>;
+  viewReady = false;
   @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('video')
+  video!: ElementRef<HTMLVideoElement>;
+  
+
+  
+  
 
   constructor(
     private authService: AuthService,
     private router: Router
   ) {}
 
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.viewReady = true;
+    });
+  }
+
   async startCamera() {
     if (this.cameraStarted) return;
   
     try {
-      this.stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      const video = this.video.nativeElement;
-      video.srcObject = this.stream;
+      this.stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user' }
+      });
   
-      await new Promise<void>((resolve) => {
-        video.onloadeddata = () => {
-          video.play();
+      setTimeout(() => {
+        if (!this.video) {
+          this.errorMessage = 'Camera view not ready';
+          return;
+        }
+  
+        const videoEl = this.video.nativeElement;
+        videoEl.srcObject = this.stream;
+  
+        videoEl.onloadeddata = () => {
+          videoEl.play();
           this.cameraStarted = true;
           this.isCameraReady = true;
-          resolve();
         };
       });
   
     } catch (err: any) {
       console.error('Camera error:', err);
-  
-      if (err.name === 'NotAllowedError') {
-        this.errorMessage = 'Camera permission denied. Please allow camera access.';
-      } else if (err.name === 'NotFoundError') {
-        this.errorMessage = 'No camera device found.';
-      } else {
-        this.errorMessage = 'Unable to access camera.';
-      }
+      this.errorMessage = 'Unable to access camera.';
     }
   }
   
   
   
   capturePhoto() {
-    // First click → open camera
+
+    if (!this.viewReady) {
+      console.warn('View not ready yet');
+      return;
+    }
     if (!this.cameraStarted) {
       this.startCamera();
       return;
     }
   
-    // 🚫 prevent capture until ready
-    if (!this.isCameraReady) return;
+    if (this.photoCaptured) {
+      this.resetCamera();
+      return;
+    }
   
-    const video = this.video.nativeElement;
-    const canvas = this.canvas.nativeElement;
+    if (!this.video || !this.canvas || !this.isCameraReady) {
+      console.warn('Video or canvas not ready');
+      return;
+    }
   
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    const videoEl: HTMLVideoElement = this.video.nativeElement;
+    const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
   
-    const ctx = canvas.getContext('2d')!;
-    ctx.drawImage(video, 0, 0);
+    canvasEl.width = videoEl.videoWidth;
+    canvasEl.height = videoEl.videoHeight;
   
-    canvas.toBlob(blob => {
-      if (!blob) return;
+    const ctx = canvasEl.getContext('2d');
+    if (!ctx) return;
   
-      this.photoFile = new File([blob], 'login.jpg', { type: 'image/jpeg' });
-      this.photoPreview = URL.createObjectURL(blob);
-      this.photoCaptured = true;
+    ctx.drawImage(videoEl, 0, 0);
+    const dataUrl = canvasEl.toDataURL('image/jpeg');
+    this.photoPreview = dataUrl;
+    this.photoCaptured = true;
+    this.photoFile = this.dataURLtoFile(dataUrl, 'login.jpg');
   
-      this.stream.getTracks().forEach(track => track.stop());
-    }, 'image/jpeg');
+    setTimeout(() => {
+      this.stream?.getTracks().forEach(t => t.stop());
+    }, 100);
   }
+  
+  dataURLtoFile(dataUrl: string, filename: string): File {
+    const arr = dataUrl.split(',');
+    const mime = arr[0].match(/:(.*?);/)![1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+  
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+  
+    return new File([u8arr], filename, { type: mime });
+  }
+  
+  
+  
+  
   
   
   
@@ -127,4 +164,20 @@ export class LoginComponent {
       this.loading = false;
     }
   }
+
+  resetCamera() {
+    this.photoCaptured = false;
+    this.photoPreview = null;
+    this.cameraStarted = false;
+    this.isCameraReady = false;
+  
+    if (this.stream) {
+      this.stream.getTracks().forEach(track => track.stop());
+    }
+  }
+
+
+  
+  
+  
 }

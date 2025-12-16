@@ -5,12 +5,35 @@ import { AuthService } from '../../../services/auth.service';
 import { EmployeeService } from '../../../services/employee.service';
 import { ClockService } from '../../../services/clock.service';
 import { CommonModule } from '@angular/common';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-employee-dashboard',
   imports: [CommonModule],
   templateUrl: './employee-dashboard.component.html',
-  styleUrl: './employee-dashboard.component.scss'
+  styleUrl: './employee-dashboard.component.scss',
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(12px)' }),
+        animate(
+          '300ms ease-out',
+          style({ opacity: 1, transform: 'translateY(0)' })
+        )
+      ])
+    ]),
+
+    trigger('slideIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateX(20px)' }),
+        animate(
+          '250ms ease-out',
+          style({ opacity: 1, transform: 'translateX(0)' })
+        )
+      ])
+    ])
+  ]
+
 })
 export class EmployeeDashboardComponent {
   employee: any = null;
