@@ -1,0 +1,111 @@
+<div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100">
+      <div class="col-12 col-md-5">
+        <div class="card fade-in">
+          <div class="card-body p-4 p-md-5">
+
+            <div class="text-center mb-4">
+              <h2 class="fw-bold text-primary">Office Management</h2>
+              <p class="text-muted">Sign in with photo verification</p>
+            </div>
+
+            <div *ngIf="errorMessage" class="alert alert-danger">
+              {{ errorMessage }}
+            </div>
+
+            <form (ngSubmit)="onLogin()">
+
+                <!-- EMAIL -->
+                <div class="mb-3">
+                  <label class="form-label">Email</label>
+                  <input
+                    type="email"
+                    class="form-control form-control-lg"
+                    [(ngModel)]="email"
+                    name="email"
+                    required
+                  />
+                </div>
+              
+                <!-- PASSWORD -->
+                <div class="mb-3">
+                  <label class="form-label">Password</label>
+                  <input
+                    type="password"
+                    class="form-control form-control-lg"
+                    [(ngModel)]="password"
+                    name="password"
+                    required
+                  />
+                </div>
+              
+                <!-- CAMERA -->
+                <div class="mb-3 text-center">
+                  <label class="form-label d-block">Live Photo</label>
+              
+                  <!-- LIVE CAMERA (only before capture) -->
+                  <video
+                  #video
+                  *ngIf="cameraStarted"
+                  autoplay
+                  playsinline
+                  class="rounded w-100 border"
+                  style="max-height: 240px;"
+                ></video>
+                
+              
+                  <canvas #canvas hidden></canvas>
+              
+                  <!-- PHOTO PREVIEW -->
+                  <img
+                    *ngIf="photoPreview"
+                    [src]="photoPreview"
+                    class="img-fluid rounded mt-2 border"
+                  />
+                  <button
+                  type="button"
+                  class="btn btn-outline-primary w-100 mt-2"
+                  (click)="capturePhoto()"
+                  [disabled]="cameraStarted && !isCameraReady"
+                >
+                  {{ cameraStarted ? '📸 Capture Photo' : '🎥 Start Camera' }}
+                </button>
+                
+                
+              
+                  <!-- HELPER TEXT -->
+                  <small class="text-muted d-block mt-2">
+                    {{ !cameraStarted
+                        ? 'Click to start live camera'
+                        : !photoCaptured
+                          ? 'Position your face & capture photo'
+                          : 'Photo captured successfully'
+                    }}
+                  </small>
+                </div>
+              
+                <!-- LOGIN -->
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-lg w-100 mt-3"
+                  [disabled]="loading || !email || !password || !photoCaptured"
+                >
+                  <span
+                    *ngIf="loading"
+                    class="spinner-border spinner-border-sm me-2"
+                  ></span>
+                  {{ loading ? 'Signing in...' : 'Sign In' }}
+                </button>
+              
+              </form>
+              
+
+            <p class="text-muted text-center mt-3 small">
+              Photo is mandatory for security verification
+            </p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

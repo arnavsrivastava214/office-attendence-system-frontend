@@ -1,0 +1,241 @@
+<div class="min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container-fluid">
+        <a class="navbar-brand fw-bold">Admin Dashboard</a>
+        <div>
+          <button class="btn btn-light me-2" (click)="showView('employees')">
+            Employees
+          </button>
+          <button class="btn btn-light me-2" (click)="showView('attendance')">
+            Attendance
+          </button>
+          <button class="btn btn-outline-light" (click)="logout()">Logout</button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container py-5">
+      <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ errorMessage }}
+        <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+      </div>
+
+      <div *ngIf="currentView === 'employees'" class="fade-in">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h2 class="fw-bold">Employee Management</h2>
+          <button class="btn btn-primary" (click)="openAddModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-2" viewBox="0 0 16 16">
+              <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+            </svg>
+            Add Employee
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Department</th>
+                    <th>Position</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let emp of employees">
+                    <td>{{ emp.full_name }}</td>
+                    <td>{{ emp.email }}</td>
+                    <td>{{ emp.department || 'N/A' }}</td>
+                    <td>{{ emp.position || 'N/A' }}</td>
+                    <td>
+                      <span class="badge" [class.bg-primary]="emp.role === 'admin'" [class.bg-secondary]="emp.role === 'employee'">
+                        {{ emp.role }}
+                      </span>
+                    </td>
+                    <td>
+                      <button class="btn btn-sm btn-info me-2" (click)="viewEmployee(emp)">View</button>
+                      <button class="btn btn-sm btn-warning me-2" (click)="openEditModal(emp)">Edit</button>
+                      <button class="btn btn-sm btn-danger" (click)="deleteEmployee(emp.id)">Delete</button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="employees.length === 0">
+                    <td colspan="6" class="text-center text-muted">No employees found</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="currentView === 'attendance'" class="fade-in">
+        <h2 class="fw-bold mb-4">Attendance Records</h2>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Employee</th>
+                    <th>Department</th>
+                    <th>Date</th>
+                    <th>Clock In</th>
+                    <th>Clock Out</th>
+                    <th>Duration</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let record of clockRecords">
+                    <td>{{ record.employees?.full_name }}</td>
+                    <td>{{ record.employees?.department || 'N/A' }}</td>
+                    <td>{{ formatDate(record.clock_in) }}</td>
+                    <td>{{ formatTime(record.clock_in) }}</td>
+                    <td>{{ record.clock_out ? formatTime(record.clock_out) : 'Active' }}</td>
+                    <td>{{ record.clock_out ? calculateDuration(record.clock_in, record.clock_out) : '-' }}</td>
+                  </tr>
+                  <tr *ngIf="clockRecords.length === 0">
+                    <td colspan="6" class="text-center text-muted">No attendance records found</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="showModal" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">{{ modalMode === 'add' ? 'Add Employee' : 'Edit Employee' }}</h5>
+              <button type="button" class="btn-close" (click)="closeModal()"></button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="mb-3">
+                  <label class="form-label">Full Name</label>
+                  <input type="text" class="form-control" [(ngModel)]="formData.full_name" name="full_name" required>
+                </div>
+                <div class="mb-3" *ngIf="modalMode === 'add'">
+                  <label class="form-label">Email</label>
+                  <input type="email" class="form-control" [(ngModel)]="formData.email" name="email" required>
+                </div>
+                <div class="mb-3" *ngIf="modalMode === 'add'">
+                  <label class="form-label">Password</label>
+                  <input type="password" class="form-control" [(ngModel)]="formData.password" name="password" required>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Phone</label>
+                  <input type="text" class="form-control" [(ngModel)]="formData.phone" name="phone">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Department</label>
+                  <input type="text" class="form-control" [(ngModel)]="formData.department" name="department">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Position</label>
+                  <input type="text" class="form-control" [(ngModel)]="formData.position" name="position">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Role</label>
+                  <select class="form-select" [(ngModel)]="formData.role" name="role" required>
+                    <option value="employee">Employee</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+              <button type="button" class="btn btn-primary" (click)="saveEmployee()" [disabled]="loading">
+                {{ loading ? 'Saving...' : 'Save' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="showViewModal" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Employee Details</h5>
+              <button type="button" class="btn-close" (click)="closeViewModal()"></button>
+            </div>
+            <div class="modal-body">
+              <div class="row g-3" *ngIf="selectedEmployee">
+                <div class="col-md-6">
+                  <label class="text-muted small">Full Name</label>
+                  <p class="fw-semibold">{{ selectedEmployee.full_name }}</p>
+                </div>
+                <div class="col-md-6">
+                  <label class="text-muted small">Email</label>
+                  <p class="fw-semibold">{{ selectedEmployee.email }}</p>
+                </div>
+                <div class="col-md-6">
+                  <label class="text-muted small">Phone</label>
+                  <p class="fw-semibold">{{ selectedEmployee.phone || 'N/A' }}</p>
+                </div>
+                <div class="col-md-6">
+                  <label class="text-muted small">Department</label>
+                  <p class="fw-semibold">{{ selectedEmployee.department || 'N/A' }}</p>
+                </div>
+                <div class="col-md-6">
+                  <label class="text-muted small">Position</label>
+                  <p class="fw-semibold">{{ selectedEmployee.position || 'N/A' }}</p>
+                </div>
+                <div class="col-md-6">
+                  <label class="text-muted small">Role</label>
+                  <p class="fw-semibold">
+                    <span class="badge" [class.bg-primary]="selectedEmployee.role === 'admin'" [class.bg-secondary]="selectedEmployee.role === 'employee'">
+                      {{ selectedEmployee.role }}
+                    </span>
+                  </p>
+                </div>
+                <div class="col-12">
+                  <hr>
+                  <h6 class="fw-bold mb-3">Recent Attendance</h6>
+                  <div class="table-responsive">
+                    <table class="table table-sm">
+                      <thead>
+                        <tr>
+                          <th>Date</th>
+                          <th>Clock In</th>
+                          <th>Clock Out</th>
+                          <th>Duration</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let record of employeeClockRecords">
+                          <td>{{ formatDate(record.clock_in) }}</td>
+                          <td>{{ formatTime(record.clock_in) }}</td>
+                          <td>{{ record.clock_out ? formatTime(record.clock_out) : 'Active' }}</td>
+                          <td>{{ record.clock_out ? calculateDuration(record.clock_in, record.clock_out) : '-' }}</td>
+                        </tr>
+                        <tr *ngIf="employeeClockRecords.length === 0">
+                          <td colspan="4" class="text-center text-muted">No attendance records found</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeViewModal()">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,319 @@
+// Login Component Styles
+.login-container {
+    overflow: hidden;
+    
+    .min-vh-100 {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    
+    .card {
+      border: none;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      
+      &-body {
+        position: relative;
+      }
+    }
+  }
+  
+  // Fade In Animation
+  .fade-in {
+    animation: fadeIn 0.8s ease-out;
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+  
+  // Form Elements
+  .form-control {
+    border: 2px solid #e1e5eb;
+    border-radius: 12px;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &:focus {
+      border-color: #4361ee;
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+      transform: translateY(-1px);
+    }
+    
+    &-lg {
+      min-height: 56px;
+    }
+  }
+  
+  .form-label {
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+  }
+  
+  // Camera Section
+  .camera-section {
+    video {
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: scale(1.01);
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+      }
+    }
+    
+    img {
+      animation: photoAppear 0.5s ease;
+      
+      @keyframes photoAppear {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+    }
+  }
+  
+  // Buttons
+  .btn {
+    border-radius: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 5px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.5);
+      opacity: 0;
+      border-radius: 100%;
+      transform: scale(1, 1) translate(-50%);
+      transform-origin: 50% 50%;
+    }
+    
+    &:focus:not(:active)::after {
+      animation: ripple 1s ease-out;
+    }
+    
+    @keyframes ripple {
+      0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+      }
+      20% {
+        transform: scale(25, 25);
+        opacity: 0.3;
+      }
+      100% {
+        opacity: 0;
+        transform: scale(40, 40);
+      }
+    }
+    
+    &-primary {
+      background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+      border: none;
+      padding: 1rem;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(67, 97, 238, 0.3);
+      }
+      
+      &:active {
+        transform: translateY(0);
+      }
+      
+      &:disabled {
+        opacity: 0.7;
+        transform: none !important;
+        box-shadow: none !important;
+      }
+    }
+    
+    &-outline-primary {
+      border: 2px solid #4361ee;
+      color: #4361ee;
+      
+      &:hover {
+        background-color: #4361ee;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(67, 97, 238, 0.2);
+      }
+    }
+  }
+  
+  // Alert Animation
+  .alert {
+    border: none;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    animation: slideDown 0.4s ease;
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    &-danger {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5d52 100%);
+      color: white;
+    }
+  }
+  
+  // Loading Spinner
+  .spinner-border {
+    animation: spin 0.75s linear infinite;
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  }
+  
+  // Responsive Design
+  @media (max-width: 768px) {
+    .login-container {
+      .card {
+        margin: 1rem;
+        border-radius: 16px;
+      }
+      
+      .card-body {
+        padding: 1.5rem !important;
+      }
+    }
+    
+    .form-control-lg {
+      min-height: 52px;
+      font-size: 0.95rem;
+    }
+    
+    video {
+      max-height: 200px !important;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .login-container {
+      .min-vh-100 {
+        padding: 1rem;
+      }
+      
+      .card {
+        margin: 0.5rem;
+        border-radius: 12px;
+      }
+      
+      .card-body {
+        padding: 1.25rem !important;
+      }
+    }
+    
+    h2 {
+      font-size: 1.5rem !important;
+    }
+    
+    .form-control-lg {
+      min-height: 48px;
+      padding: 0.75rem;
+    }
+    
+    .btn {
+      padding: 0.875rem;
+    }
+    
+    video {
+      max-height: 180px !important;
+    }
+  }
+  
+  // Dark Mode Support
+  @media (prefers-color-scheme: dark) {
+    .login-container {
+      .min-vh-100 {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      }
+      
+      .card {
+        background: rgba(30, 41, 59, 0.95);
+        color: #e2e8f0;
+      }
+      
+      .form-control {
+        background-color: #334155;
+        border-color: #475569;
+        color: #e2e8f0;
+        
+        &:focus {
+          background-color: #334155;
+          border-color: #4361ee;
+        }
+      }
+      
+      .form-label {
+        color: #cbd5e1;
+      }
+      
+      .text-muted {
+        color: #94a3b8 !important;
+      }
+    }
+  }
+  
+  // Accessibility
+  @media (prefers-reduced-motion: reduce) {
+    .fade-in,
+    .alert,
+    .btn,
+    .form-control,
+    video:hover,
+    img {
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+    }
+  }
+  
+  // High Contrast Mode
+  @media (prefers-contrast: high) {
+    .btn-primary {
+      border: 2px solid #000;
+    }
+    
+    .form-control {
+      border: 2px solid #000;
+    }
+  }
