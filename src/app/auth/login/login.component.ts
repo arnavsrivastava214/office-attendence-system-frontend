@@ -12,6 +12,10 @@ import { CommonModule } from '@angular/common';
 })
 export class LoginComponent implements AfterViewInit {
 
+  locationCaptured = false;
+latitude!: number;
+longitude!: number;
+accuracy!: number;
   email = '';
   password = '';
   errorMessage = '';
@@ -187,6 +191,53 @@ export class LoginComponent implements AfterViewInit {
       this.stream.getTracks().forEach(track => track.stop());
     }
   }
+
+  getLocation() {
+  if (!navigator.geolocation) {
+    alert('Geolocation is not supported by this browser.');
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      this.latitude = position.coords.latitude;
+      this.longitude = position.coords.longitude;
+      this.accuracy = position.coords.accuracy;
+
+      console.log('Latitude:', this.latitude);
+      console.log('Longitude:', this.longitude);
+      console.log('Accuracy:', this.accuracy);
+
+      this.locationCaptured = true;
+
+      alert(
+        `Lat: ${this.latitude}\nLng: ${this.longitude}\nAccuracy: ${this.accuracy}m`
+      );
+    },
+   (error) => {
+  console.error('Geolocation error:', error);
+
+  switch (error.code) {
+    case error.PERMISSION_DENIED:
+      alert('❌ Location permission DENIED');
+      break;
+
+    case error.POSITION_UNAVAILABLE:
+      alert('❌ Location NOT AVAILABLE on this device');
+      break;
+
+    case error.TIMEOUT:
+      alert('❌ Location request TIMEOUT');
+      break;
+
+    default:
+      alert('❌ Unknown location error');
+  }
+}
+
+  );
+}
+
 
 
   

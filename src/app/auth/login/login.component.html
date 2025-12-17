@@ -47,12 +47,11 @@
                   autoplay
                   playsinline
                 ></video>
-              
+
                 <img *ngIf="photoCaptured" [src]="photoPreview" />
               </div>
-              
+
               <canvas #canvas hidden></canvas>
-              
 
               <!-- BUTTON (OUTSIDE camera-box) -->
               <button
@@ -81,11 +80,34 @@
               </small>
             </div>
 
+            <!-- LOCATION TRACK -->
+            <div class="mb-3 text-center">
+              <label class="form-label d-block">Location Verification</label>
+
+              <button
+                type="button"
+                class="btn btn-outline-success w-100"
+                (click)="getLocation()"
+                [disabled]="locationCaptured"
+              >
+                📍
+                {{ locationCaptured ? "Location Verified" : "Track Location" }}
+              </button>
+
+              <small *ngIf="locationCaptured" class="text-success d-block mt-2">
+                Location captured successfully
+              </small>
+            </div>
+
             <!-- LOGIN -->
             <button
               type="submit"
               class="btn btn-primary btn-lg w-100 mt-3"
-              [disabled]="loading || !email || !password || !photoCaptured"
+              [disabled]=" loading ||
+    !email ||
+    !password ||
+    !photoCaptured ||
+    !locationCaptured"
             >
               <span
                 *ngIf="loading"
