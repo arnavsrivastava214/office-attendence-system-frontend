@@ -76,4 +76,27 @@ export class AuthService {
   isAdmin(): boolean {
     return this.getCurrentUser()?.user?.role === 'admin';
   }
+  isAdminOrHr(): boolean {
+    const role = localStorage.getItem('userRole');
+    return role === 'admin' || role === 'hr';
+  }
+
+  async loginAdmin(email: string, password: string): Promise<any> {
+    const response: any = await firstValueFrom(
+      this.http.post(`${this.apiUrl}/admin/login`, {
+        email: email.trim(),
+        password,
+      })
+    );
+
+    const user = response.user;
+
+    localStorage.setItem('currentUser', JSON.stringify(response));
+    localStorage.setItem('userId', user.id.toString());
+    localStorage.setItem('userRole', user.role);
+
+    this.currentUserSubject.next(response);
+
+    return response;
+  }
 }

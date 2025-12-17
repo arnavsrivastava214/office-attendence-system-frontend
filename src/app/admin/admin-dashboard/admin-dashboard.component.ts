@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { EmployeeService } from '../../../services/employee.service';
 import { ClockService } from '../../../services/clock.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-admin-dashboard',
   imports: [CommonModule, FormsModule],
   templateUrl: './admin-dashboard.component.html',
-  styleUrl: './admin-dashboard.component.scss'
+  styleUrl: './admin-dashboard.component.scss',
 })
 export class AdminDashboardComponent {
   currentView: string = 'employees';
@@ -26,21 +27,29 @@ export class AdminDashboardComponent {
     phone: '',
     department: '',
     position: '',
-    role: 'employee'
+    role: 'employee',
   };
   successMessage: string = '';
   errorMessage: string = '';
   loading: boolean = false;
-
+  isAdmin: boolean = false;
+  isAdminAndHr: boolean = false;
   constructor(
     private authService: AuthService,
     private employeeService: EmployeeService,
-    private clockService: ClockService
+    private clockService: ClockService,
+    private router: Router
   ) {}
 
   ngOnInit() {
     this.loadEmployees();
     this.loadClockRecords();
+    const userRole = localStorage.getItem('userRole');
+    if (userRole === 'admin') {
+      this.isAdmin = true;
+    } else {
+      this.isAdmin = false;
+    }
   }
 
   showView(view: string) {
@@ -77,7 +86,7 @@ export class AdminDashboardComponent {
       phone: '',
       department: '',
       position: '',
-      role: 'employee'
+      role: 'employee',
     };
     this.showModal = true;
   }
@@ -90,7 +99,7 @@ export class AdminDashboardComponent {
       phone: employee.phone,
       department: employee.department,
       position: employee.position,
-      role: employee.role
+      role: employee.role,
     };
     this.showModal = true;
   }
@@ -109,7 +118,10 @@ export class AdminDashboardComponent {
         await this.authService.register(this.formData);
         this.successMessage = 'Employee added successfully!';
       } else {
-        await this.employeeService.updateEmployee(this.formData.id, this.formData);
+        await this.employeeService.updateEmployee(
+          this.formData.id,
+          this.formData
+        );
         this.successMessage = 'Employee updated successfully!';
       }
 
@@ -139,7 +151,9 @@ export class AdminDashboardComponent {
   async viewEmployee(employee: any) {
     this.selectedEmployee = employee;
     try {
-      this.employeeClockRecords = await this.clockService.getEmployeeClockRecords(employee.id);
+      this.employeeClockRecords =
+        await this.clockService.getEmployeeClockRecords(employee.id);
+      console.log('this.employeeClockRecords', this.employeeClockRecords);
     } catch (error: any) {
       this.employeeClockRecords = [];
     }
@@ -169,6 +183,11 @@ export class AdminDashboardComponent {
   }
 
   logout() {
-    this.authService.logout();
+    this.router.navigate(['admin/login']);
+    localStorage.clear();
+  }
+
+  isNormalEmployee(emp: any): boolean {
+    return emp.role !== 'admin' && emp.role !== 'hr';
   }
 }
