@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 })
 export class LoginComponent implements AfterViewInit {
 
+  name=""
   locationCaptured = false;
 latitude!: number;
 longitude!: number;
