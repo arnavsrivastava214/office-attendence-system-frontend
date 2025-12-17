@@ -14,14 +14,15 @@ export const authGuard = () => {
   return false;
 };
 
+
+
 export const adminGuard = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (authService.isLoggedIn() && authService.isAdmin()) {
+  if (authService.isLoggedIn() && authService.isAdminOrHr()) {
     return true;
   }
-
   router.navigate(['/login']);
   return false;
 };

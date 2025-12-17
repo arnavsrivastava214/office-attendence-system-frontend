@@ -1,0 +1,399 @@
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    padding: 1rem;
+    position: relative;
+    overflow: hidden;
+  
+    &::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: backgroundMove 20s linear infinite;
+    }
+  }
+  
+  @keyframes backgroundMove {
+    0% {
+      transform: translate(0, 0);
+    }
+    100% {
+      transform: translate(50px, 50px);
+    }
+  }
+  
+  .login-card {
+    background: rgba(20, 20, 20, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 3rem 2rem;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 1;
+  
+    @media (max-width: 640px) {
+      padding: 2rem 1.5rem;
+      border-radius: 16px;
+    }
+  }
+  
+  .login-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+      border-radius: 16px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.1);
+  
+      svg {
+        color: #0a0a0a;
+      }
+    }
+  
+    .title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 0 0 0.5rem 0;
+      letter-spacing: -0.02em;
+  
+      @media (max-width: 640px) {
+        font-size: 1.75rem;
+      }
+    }
+  
+    .subtitle {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin: 0;
+    }
+  }
+  
+  .login-form {
+    .form-group {
+      margin-bottom: 1.5rem;
+  
+      &:last-of-type {
+        margin-bottom: 2rem;
+      }
+    }
+  
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 0.5rem;
+    }
+  
+    .form-input {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: #ffffff;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+  
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+      }
+  
+      &:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.3);
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.05);
+      }
+  
+      &.error {
+        border-color: #ef4444;
+        background: rgba(239, 68, 68, 0.05);
+      }
+    }
+  
+    .password-wrapper {
+      position: relative;
+  
+      .toggle-password {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        padding: 0.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.2s ease;
+  
+        &:hover {
+          color: rgba(255, 255, 255, 0.8);
+        }
+      }
+  
+      .form-input {
+        padding-right: 3rem;
+      }
+    }
+  
+    .error-message {
+      margin-top: 0.5rem;
+      font-size: 0.8125rem;
+      color: #ef4444;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+  
+    .checkbox-group {
+      margin-bottom: 1.5rem;
+    }
+  
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+  
+      .checkbox-input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+  
+        &:checked + .checkbox-custom {
+          background: #ffffff;
+          border-color: #ffffff;
+  
+          &::after {
+            opacity: 1;
+          }
+        }
+      }
+  
+      .checkbox-custom {
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 6px;
+        background: transparent;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+        position: relative;
+  
+        &::after {
+          content: '';
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 5px;
+          height: 9px;
+          border: solid #0a0a0a;
+          border-width: 0 2px 2px 0;
+          transform: translate(-50%, -60%) rotate(45deg);
+          opacity: 0;
+          transition: opacity 0.2s ease;
+        }
+      }
+  
+      .checkbox-text {
+        margin-left: 0.75rem;
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.8);
+        user-select: none;
+      }
+    }
+  
+    .submit-button {
+      width: 100%;
+      padding: 1rem;
+      background: #ffffff;
+      color: #0a0a0a;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+  
+      &:hover:not(:disabled) {
+        background: #f0f0f0;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
+      }
+  
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
+  
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+  
+      .loading-spinner {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+  
+        .spinner {
+          animation: spin 1s linear infinite;
+        }
+      }
+    }
+  
+    .form-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+  
+      .forgot-link {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: color 0.2s ease;
+  
+        &:hover {
+          color: #ffffff;
+        }
+      }
+    }
+  }
+  
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  // Alert Notification Styles
+  .alert-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1000;
+    animation: slideIn 0.3s ease-out;
+  
+    @media (max-width: 640px) {
+      left: 1rem;
+      right: 1rem;
+    }
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  .alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    background: rgba(20, 20, 20, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    min-width: 320px;
+    max-width: 420px;
+  
+    @media (max-width: 640px) {
+      min-width: auto;
+      max-width: none;
+    }
+  
+    &.success {
+      .alert-icon {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+      }
+    }
+  
+    &.error {
+      .alert-icon {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+      }
+    }
+  
+    .alert-icon {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  
+    .alert-content {
+      flex: 1;
+      min-width: 0;
+  
+      .alert-title {
+        margin: 0 0 0.25rem 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #ffffff;
+      }
+  
+      .alert-message {
+        margin: 0;
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.4;
+      }
+    }
+  
+    .alert-close {
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      padding: 0.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s ease;
+  
+      &:hover {
+        color: rgba(255, 255, 255, 0.9);
+      }
+    }
+  }
