@@ -8,15 +8,13 @@ import { CommonModule } from '@angular/common';
   selector: 'app-login',
   imports: [FormsModule, CommonModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent implements AfterViewInit {
-
-  name=""
   locationCaptured = false;
-latitude!: number;
-longitude!: number;
-accuracy!: number;
+  latitude!: number;
+  longitude!: number;
+  accuracy!: number;
   email = '';
   password = '';
   errorMessage = '';
@@ -31,16 +29,36 @@ accuracy!: number;
   @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('video')
   video!: ElementRef<HTMLVideoElement>;
-  
 
-  
-  
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
+
+
+
+  ngOnInit() {
+    this.prefetchLocation();
+  }
+  
+  prefetchLocation() {
+    if (!navigator.geolocation) return;
+  
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        this.latitude = pos.coords.latitude;
+        this.longitude = pos.coords.longitude;
+        this.accuracy = pos.coords.accuracy;
+        this.locationCaptured = true;
+      },
+      () => {},
+      {
+        enableHighAccuracy: false,
+        maximumAge: 60000,         
+        timeout: 5000
+      }
+    );
+  }
+  
   ngAfterViewInit() {
     setTimeout(() => {
       this.viewReady = true;
@@ -49,38 +67,34 @@ accuracy!: number;
 
   async startCamera() {
     if (this.cameraStarted) return;
-  
+
     try {
       this.stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user' }
+        video: { facingMode: 'user' },
       });
-  
+
       setTimeout(() => {
         if (!this.video) {
           this.errorMessage = 'Camera view not ready';
           return;
         }
-  
+
         const videoEl = this.video.nativeElement;
         videoEl.srcObject = this.stream;
-  
+
         videoEl.onloadeddata = () => {
           videoEl.play();
           this.cameraStarted = true;
           this.isCameraReady = true;
         };
       });
-  
     } catch (err: any) {
       console.error('Camera error:', err);
       this.errorMessage = 'Unable to access camera.';
     }
   }
-  
-  
-  
-  capturePhoto() {
 
+  capturePhoto() {
     if (!this.viewReady) {
       console.warn('View not ready yet');
       return;
@@ -89,79 +103,178 @@ accuracy!: number;
       this.startCamera();
       return;
     }
-  
+
     if (this.photoCaptured) {
       this.resetCamera();
       return;
     }
-  
+
     if (!this.video || !this.canvas || !this.isCameraReady) {
       console.warn('Video or canvas not ready');
       return;
     }
-  
+
     const videoEl: HTMLVideoElement = this.video.nativeElement;
     const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
-  
+
     canvasEl.width = videoEl.videoWidth;
     canvasEl.height = videoEl.videoHeight;
-  
+
     const ctx = canvasEl.getContext('2d');
     if (!ctx) return;
-  
+
     ctx.drawImage(videoEl, 0, 0);
     const dataUrl = canvasEl.toDataURL('image/jpeg');
     this.photoPreview = dataUrl;
     this.photoCaptured = true;
     this.photoFile = this.dataURLtoFile(dataUrl, 'login.jpg');
-  
+
     setTimeout(() => {
-      this.stream?.getTracks().forEach(t => t.stop());
+      this.stream?.getTracks().forEach((t) => t.stop());
     }, 100);
   }
-  
+
   dataURLtoFile(dataUrl: string, filename: string): File {
     const arr = dataUrl.split(',');
     const mime = arr[0].match(/:(.*?);/)![1];
     const bstr = atob(arr[1]);
     let n = bstr.length;
     const u8arr = new Uint8Array(n);
-  
+
     while (n--) {
       u8arr[n] = bstr.charCodeAt(n);
     }
-  
+
     return new File([u8arr], filename, { type: mime });
   }
+
+  // async onLogin() {
+  //   this.errorMessage = '';
+
+  //   // 🔒 Basic validation
+  //   if (!this.email || !this.password) {
+  //     this.errorMessage = 'Email and password are required';
+  //     return;
+  //   }
+
+  //   // Photo is mandatory (as per your requirement)
+  //   if (!this.photoCaptured || !this.photoFile) {
+  //     this.errorMessage = 'Photo is required for login';
+  //     return;
+  //   }
+
+  //   this.loading = true;
+
+  //   try {
+  //     const result = await this.authService.login(
+  //       this.email.trim(), 
+  //       this.password,
+  //       this.photoFile 
+  //     );
+
+  //     if (result?.employee?.role === 'admin') {
+  //       this.router.navigate(['/admin']);
+  //     } else {
+  //       this.router.navigate(['/employee']);
+  //     }
+  //   } catch (error: any) {
+  //     this.errorMessage =
+  //       error?.error?.error || error?.message || 'Invalid email or password';
+  //   } finally {
+  //     this.loading = false;
+  //   }
+  // }
+
+  resetCamera() {
+    this.photoCaptured = false;
+    this.photoPreview = null;
+    this.cameraStarted = false;
+    this.isCameraReady = false;
+
+    if (this.stream) {
+      this.stream.getTracks().forEach((track) => track.stop());
+    }
+  }
+
+  async getLocation() {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by this browser.');
+      return;
+    }
   
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.latitude = position.coords.latitude;
+        this.longitude = position.coords.longitude;
+        this.accuracy = position.coords.accuracy;
   
+        this.locationCaptured = true;
   
-  
-  
-  
-  
+        this.errorMessage =  `✅ Location Captured\nLat: ${this.latitude}\nLng: ${this.longitude}\nAccuracy: ${this.accuracy}m`
+        ;
+      },
+      (error) => {
+         this.errorMessage = '❌ Failed to get location';
+        console.error(error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
+      }
+    );
+  }
+  getLocationFast() {
+  return new Promise<void>((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        this.latitude = pos.coords.latitude;
+        this.longitude = pos.coords.longitude;
+        this.accuracy = pos.coords.accuracy;
+        this.locationCaptured = true;
+        resolve();
+      },
+      reject,
+      {
+        enableHighAccuracy: false,
+        maximumAge: 60000,
+        timeout: 5000
+      }
+    );
+  });
+}
+
+
   async onLogin() {
     this.errorMessage = '';
   
-    // 🔒 Basic validation
     if (!this.email || !this.password) {
       this.errorMessage = 'Email and password are required';
       return;
     }
   
-    // Photo is mandatory (as per your requirement)
     if (!this.photoCaptured || !this.photoFile) {
       this.errorMessage = 'Photo is required for login';
       return;
     }
   
+    if (!this.locationCaptured) {
+      await this.getLocationFast();
+    }
+    
+  
     this.loading = true;
   
     try {
       const result = await this.authService.login(
-        this.email.trim(),       // avoid hidden spaces
+        this.email.trim(),
         this.password,
-        this.photoFile           // must be File object
+        this.photoFile,
+        {
+          latitude: this.latitude,
+          longitude: this.longitude,
+          accuracy: this.accuracy
+        }
       );
   
       if (result?.employee?.role === 'admin') {
@@ -169,79 +282,13 @@ accuracy!: number;
       } else {
         this.router.navigate(['/employee']);
       }
-  
     } catch (error: any) {
       this.errorMessage =
-        error?.error?.error ||
-        error?.message ||
-        'Invalid email or password';
-  
+        error?.error?.error || error?.message || 'Invalid email or password';
     } finally {
       this.loading = false;
     }
   }
-  
-
-  resetCamera() {
-    this.photoCaptured = false;
-    this.photoPreview = null;
-    this.cameraStarted = false;
-    this.isCameraReady = false;
-  
-    if (this.stream) {
-      this.stream.getTracks().forEach(track => track.stop());
-    }
-  }
-
-  getLocation() {
-  if (!navigator.geolocation) {
-    alert('Geolocation is not supported by this browser.');
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      this.latitude = position.coords.latitude;
-      this.longitude = position.coords.longitude;
-      this.accuracy = position.coords.accuracy;
-
-      console.log('Latitude:', this.latitude);
-      console.log('Longitude:', this.longitude);
-      console.log('Accuracy:', this.accuracy);
-
-      this.locationCaptured = true;
-
-      alert(
-        `Lat: ${this.latitude}\nLng: ${this.longitude}\nAccuracy: ${this.accuracy}m`
-      );
-    },
-   (error) => {
-  console.error('Geolocation error:', error);
-
-  switch (error.code) {
-    case error.PERMISSION_DENIED:
-      alert('❌ Location permission DENIED');
-      break;
-
-    case error.POSITION_UNAVAILABLE:
-      alert('❌ Location NOT AVAILABLE on this device');
-      break;
-
-    case error.TIMEOUT:
-      alert('❌ Location request TIMEOUT');
-      break;
-
-    default:
-      alert('❌ Unknown location error');
-  }
-}
-
-  );
-}
-
-
-
-  
   
   
 }
