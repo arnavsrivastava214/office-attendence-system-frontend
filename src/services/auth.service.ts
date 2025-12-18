@@ -23,26 +23,43 @@ export class AuthService {
     }
   }
 
-  async login(email: string, password: string, photo: File): Promise<any> {
+  async login(
+    email: string,
+    password: string,
+    photo: File,
+    location?: { latitude: number; longitude: number; accuracy: number }
+  ): Promise<any> {
+  
     const formData = new FormData();
+  
     formData.append('email', email.trim());
     formData.append('password', password);
+  
     if (photo instanceof File) {
-      formData.append('photo', photo); // MUST be 'photo'
+      formData.append('photo', photo); 
     }
+  
+    if (location) {
+      formData.append('latitude', location.latitude.toString());
+      formData.append('longitude', location.longitude.toString());
+      formData.append('accuracy', location.accuracy.toString());
+    }
+  
     const response: any = await firstValueFrom(
       this.http.post(`${this.apiUrl}/login`, formData)
     );
+  
     const user = response.user || response.employee;
-
+  
     localStorage.setItem('currentUser', JSON.stringify(response));
     localStorage.setItem('userId', user.id.toString());
     localStorage.setItem('userRole', user.role);
-
+  
     this.currentUserSubject.next(response);
-
+  
     return response;
   }
+  
 
   async register(employeeData: any): Promise<any> {
     return await firstValueFrom(
@@ -99,4 +116,14 @@ export class AuthService {
 
     return response;
   }
+
+  getLoginLocations(employeeId: string): Observable<any> {
+    return this.http.get<any>(
+      `${this.apiUrl}/employees/${employeeId}/login-locations`,
+      {
+        headers: this.getAuthHeaders()
+      }
+    );
+  }
+  
 }

@@ -1,0 +1,277 @@
+<div class="locations-container">
+    <!-- Header Section -->
+    <div class="locations-header">
+      <div class="header-content">
+        <h2 class="page-title">
+          <i class="fas fa-map-marker-alt me-2"></i>
+          Login Locations
+        </h2>
+        <div class="header-info">
+          <span class="employee-id">
+            <i class="fas fa-user me-1"></i>
+            Employee ID: {{ employeeId }}
+          </span>
+          <span class="location-count">
+            <i class="fas fa-history me-1"></i>
+            Total Logins: {{ locations.length }}
+          </span>
+        </div>
+      </div>
+      
+      <!-- Actions -->
+      <div class="header-actions">
+        <button class="btn btn-refresh" (click)="loadLoginLocations()">
+          <i class="fas fa-sync-alt"></i>
+          Refresh
+        </button>
+        <button class="btn btn-back" routerLink="/admin/dashboard">
+          <i class="fas fa-arrow-left"></i>
+          Back to Employees
+        </button>
+      </div>
+    </div>
+  
+    <!-- Stats Cards -->
+    <div class="stats-cards">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="stat-content">
+          <h3>Recent Login</h3>
+          <p>{{ getRecentLoginTime() }}</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-map-pin"></i>
+        </div>
+        <div class="stat-content">
+          <h3>Most Common Area</h3>
+          <p>{{ getMostCommonArea() }}</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-bullseye"></i>
+        </div>
+        <div class="stat-content">
+          <h3>Avg Accuracy</h3>
+          <p>{{ getAverageAccuracy() }} meters</p>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Map Preview (Optional) -->
+    <div class="map-preview" *ngIf="locations.length > 0">
+      <div class="map-header">
+        <h4>
+          <i class="fas fa-map me-2"></i>
+          Location Map Preview
+        </h4>
+        <small class="text-muted">Approximate locations based on coordinates</small>
+      </div>
+      <div class="map-placeholder">
+        <i class="fas fa-map-marked-alt map-icon"></i>
+        <p>Interactive map showing {{ locations.length }} login points</p>
+        <button class="btn btn-view-map" (click)="viewOnGoogleMaps()">
+          <i class="fas fa-external-link-alt"></i>
+          View on Google Maps
+        </button>
+      </div>
+    </div>
+  
+    <!-- Locations Table -->
+    <div class="locations-table-container" *ngIf="locations.length > 0">
+      <div class="table-header">
+        <h4>
+          <i class="fas fa-list-alt me-2"></i>
+          Login History Details
+        </h4>
+        <div class="table-controls">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search locations..." (input)="filterLocations($event)">
+          </div>
+          <div class="view-toggle">
+            <button class="btn btn-view" [class.active]="viewMode === 'list'" (click)="viewMode = 'list'">
+              <i class="fas fa-list"></i>
+            </button>
+            <button class="btn btn-view" [class.active]="viewMode === 'grid'" (click)="viewMode = 'grid'">
+              <i class="fas fa-th-large"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Grid View -->
+      <div class="locations-grid" *ngIf="viewMode === 'grid' && filteredLocations.length > 0">
+        <div class="location-card" *ngFor="let loc of filteredLocations; let i = index">
+          <div class="card-header">
+            <span class="card-index">#{{ i + 1 }}</span>
+            <span class="card-time">{{ formatTime(loc.time) }}</span>
+          </div>
+          <div class="card-body">
+            <div class="location-info">
+              <h5 class="location-title">
+                <i class="fas fa-map-marker"></i>
+                Location Details
+              </h5>
+              <p class="location-address">{{ loc.location }}</p>
+            </div>
+            <div class="coordinates">
+              <div class="coord-item">
+                <span class="coord-label">Latitude:</span>
+                <span class="coord-value">{{ loc.latitude }}</span>
+              </div>
+              <div class="coord-item">
+                <span class="coord-label">Longitude:</span>
+                <span class="coord-value">{{ loc.longitude }}</span>
+              </div>
+              <div class="coord-item">
+                <span class="coord-label">Accuracy:</span>
+                <span class="coord-value">{{ loc.accuracy }}m</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-action" (click)="copyCoordinates(loc)">
+              <i class="fas fa-copy"></i>
+              Copy Coordinates
+            </button>
+            <button class="btn btn-action" (click)="viewLocationOnMap(loc)">
+              <i class="fas fa-map"></i>
+              View on Map
+            </button>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Table View -->
+      <div class="table-responsive" *ngIf="viewMode === 'list'">
+        <table class="locations-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>
+                <i class="fas fa-map-marker-alt me-1"></i>
+                Location
+              </th>
+              <th>
+                <i class="fas fa-globe-americas me-1"></i>
+                Latitude
+              </th>
+              <th>
+                <i class="fas fa-globe-asia me-1"></i>
+                Longitude
+              </th>
+              <th>
+                <i class="fas fa-bullseye me-1"></i>
+                Accuracy
+              </th>
+              <th>
+                <i class="fas fa-clock me-1"></i>
+                Time
+              </th>
+              <th>
+                <i class="fas fa-cogs me-1"></i>
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let loc of filteredLocations; let i = index">
+              <td class="index-cell">{{ i + 1 }}</td>
+              <td class="location-cell">
+                <div class="location-content">
+                  <i class="fas fa-map-pin"></i>
+                  <div>
+                    <div class="location-address">{{ loc.location }}</div>
+                    <small class="location-area">{{ extractArea(loc.location) }}</small>
+                  </div>
+                </div>
+              </td>
+              <td class="coord-cell">{{ loc.latitude }}</td>
+              <td class="coord-cell">{{ loc.longitude }}</td>
+              <td class="accuracy-cell">
+                <div class="accuracy-meter">
+                  <div class="accuracy-bar" [style.width.%]="getAccuracyPercentage(loc.accuracy)"></div>
+                  <span>{{ loc.accuracy }}m</span>
+                </div>
+              </td>
+              <td class="time-cell">
+                <div class="time-display">
+                  <div>{{ formatDate(loc.time) }}</div>
+                  <small>{{ formatTime(loc.time) }}</small>
+                </div>
+              </td>
+              <td class="actions-cell">
+                <div class="action-buttons">
+                  <button class="btn btn-sm btn-action" (click)="copyCoordinates(loc)" title="Copy Coordinates">
+                    <i class="fas fa-copy"></i>
+                  </button>
+                  <button class="btn btn-sm btn-action" (click)="viewLocationOnMap(loc)" title="View on Map">
+                    <i class="fas fa-map-marked-alt"></i>
+                  </button>
+                  <button class="btn btn-sm btn-action" (click)="shareLocation(loc)" title="Share">
+                    <i class="fas fa-share-alt"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="empty-state" *ngIf="filteredLocations.length === 0">
+        <i class="fas fa-map-marked-alt"></i>
+        <h4>No locations found</h4>
+        <p>Try adjusting your search or check back later for new login records.</p>
+      </div>
+  
+      <div class="pagination-container" *ngIf="filteredLocations.length > itemsPerPage">
+        <div class="pagination-info">
+          Showing Showing {{ startEntry }} to {{ endEntry }} of {{ filteredLocations.length }} entries
+          entries
+        </div>
+        <div class="pagination-controls">
+          <button class="btn btn-pagination" [disabled]="currentPage === 0" (click)="prevPage()">
+            <i class="fas fa-chevron-left"></i>
+            Previous
+          </button>
+          <div class="page-numbers">
+            <button 
+              *ngFor="let page of getPageNumbers()" 
+              class="btn btn-page" 
+              [class.active]="page === currentPage + 1"
+              (click)="goToPage(page - 1)"
+            >
+              {{ page }}
+            </button>
+          </div>
+          <button class="btn btn-pagination" [disabled]="(currentPage + 1) * itemsPerPage >= filteredLocations.length" (click)="nextPage()">
+            Next
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  
+    <div class="loading-state" *ngIf="locations.length === 0 && !errorMessage">
+      <div class="spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+      </div>
+      <p>Locations Not Found...</p>
+    </div>
+  
+    <div class="error-state" *ngIf="errorMessage">
+      <i class="fas fa-exclamation-triangle"></i>
+      <h4>Unable to load locations</h4>
+      <p>{{ errorMessage }}</p>
+      <button class="btn btn-retry" (click)="loadLoginLocations()">
+        <i class="fas fa-redo"></i>
+        Try Again
+      </button>
+    </div>
+  </div>

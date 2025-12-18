@@ -14,7 +14,7 @@
         <button class="btn btn-light me-2" (click)="showView('attendance')">
           Attendance
         </button>
-        <button class="btn btn-outline-light" (click)="logout()">Logout</button>
+        <button class="btn btn-outline-danger" (click)="logout()">Logout</button>
       </div>
     </div>
   </nav>
@@ -78,6 +78,8 @@
                   <th>Position</th>
                   <th>Role</th>
                   <th>Actions</th>
+                  <th>Work Details</th>
+                  <th>Login Locations</th>
                 </tr>
               </thead>
               <tbody>
@@ -98,12 +100,6 @@
                     </td>
                     <td>
                       <button
-                        class="btn btn-sm btn-info me-2"
-                        (click)="viewEmployee(emp)"
-                      >
-                        View
-                      </button>
-                      <button
                         class="btn btn-sm btn-warning me-2"
                         (click)="openEditModal(emp)"
                         *ngIf="isAdmin"
@@ -118,6 +114,23 @@
                         Delete
                       </button>
                     </td>
+                    <td>
+                      <button
+                        class="btn btn-sm btn-info me-2"
+                        (click)="viewEmployee(emp)"
+                      >
+                        View Deatails
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        class="btn btn-sm btn-info me-2"
+                        [routerLink]="['/admin/employee-locations', emp.id]"
+                      >
+                        View Locations
+                      </button>
+                    </td>
+                    
                   </ng-container>
                 </tr>
                 <tr *ngIf="employees.length === 0">

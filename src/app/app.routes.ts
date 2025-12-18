@@ -4,6 +4,7 @@ import { adminGuard, employeeGuard } from '../guards/auth.guard';
 import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
 import { EmployeeDashboardComponent } from './employee/employee-dashboard/employee-dashboard.component';
 import { AdminloginComponent } from './admin/adminlogin/adminlogin.component';
+import { LoginLocationsComponent } from './admin/login-locations/login-locations.component';
 
 export const routes: Routes = [
         { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -11,6 +12,7 @@ export const routes: Routes = [
         { path: 'login', component: LoginComponent },
       
         { path: 'admin/login', component: AdminloginComponent },
+        { path: 'admin/employee-locations/:id', component: LoginLocationsComponent },
       
         { path: 'admin/dashboard', component: AdminDashboardComponent, canActivate: [adminGuard] },
       
