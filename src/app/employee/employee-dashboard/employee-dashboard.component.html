@@ -1,101 +1,106 @@
 <div class="dashboard-container">
-    <!-- Header -->
-    <header class="dashboard-header">
-      <div class="header-container">
-        <div class="brand-section">
-            <!-- <svg viewBox="0 0 24 24" fill="currentColor">
+  <!-- Header -->
+  <header class="dashboard-header">
+    <div class="header-container">
+      <div class="brand-section">
+        <!-- <svg viewBox="0 0 24 24" fill="currentColor">
               <path
                 d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
               />
             </svg> -->
-            <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=262,fit=crop,q=95/mv0DXgB5KwFZZN5w/helixson-removebg-preview-1-dWxyVDKB4gtp83RN.png" style="height: 61px;
-    width: 100%;" alt="">
-          <h1 class="brand-title">Employee Dashboard</h1>
+        <img
+          src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=262,fit=crop,q=95/mv0DXgB5KwFZZN5w/helixson-removebg-preview-1-dWxyVDKB4gtp83RN.png"
+          style="height: 61px; width: 100%"
+          alt=""
+        />
+        <h1 class="brand-title">Employee Dashboard</h1>
+      </div>
+      <button class="logout-btn" (click)="logout()">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
+          />
+        </svg>
+        <span>Logout</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <!-- Notifications -->
+    <div class="notification-container">
+      <div
+        *ngIf="successMessage"
+        class="notification success-notification"
+        @slideIn
+      >
+        <div class="notification-content">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+          </svg>
+          <span>{{ successMessage }}</span>
         </div>
-        <button class="logout-btn" (click)="logout()">
+        <button class="notification-close" (click)="successMessage = ''">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path
-              d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
             />
           </svg>
-          <span>Logout</span>
         </button>
       </div>
-    </header>
 
-    <!-- Main Content -->
-    <main class="dashboard-main">
-      <!-- Notifications -->
-      <div class="notification-container">
-        <div
-          *ngIf="successMessage"
-          class="notification success-notification"
-          @slideIn
-        >
-          <div class="notification-content">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-            </svg>
-            <span>{{ successMessage }}</span>
-          </div>
-          <button class="notification-close" (click)="successMessage = ''">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-              />
-            </svg>
-          </button>
+      <div
+        *ngIf="errorMessage"
+        class="notification error-notification"
+        @slideIn
+      >
+        <div class="notification-content">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+            />
+          </svg>
+          <span>{{ errorMessage }}</span>
         </div>
-
-        <div
-          *ngIf="errorMessage"
-          class="notification error-notification"
-          @slideIn
-        >
-          <div class="notification-content">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
-              />
-            </svg>
-            <span>{{ errorMessage }}</span>
-          </div>
-          <button class="notification-close" (click)="errorMessage = ''">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-              />
-            </svg>
-          </button>
-        </div>
+        <button class="notification-close" (click)="errorMessage = ''">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+        </button>
       </div>
+    </div>
 
-      <!-- Dashboard Grid -->
-      <div class="dashboard-grid">
-        <!-- Profile Card -->
-        <div class="dashboard-card profile-card" @fadeIn>
-          <div class="card-header">
-            <h2 class="card-title">My Profile</h2>
-          </div>
-          <div class="card-content">
-            <div class="profile-avatar">
-              <div class="avatar-circle">
-                {{ employee?.full_name?.charAt(0) || "U" }}
-              </div>
-              <div class="profile-info">
-                <h3 class="profile-name">
-                  {{ employee?.full_name || "Loading..." }}
-                </h3>
-                <p class="profile-title">
-                  {{ employee?.position || "Position" }}
-                </p>
-                <p class="profile-department">
-                  {{ employee?.department || "Department" }}
-                </p>
-              </div>
+    <!-- Dashboard Grid -->
+    <div class="dashboard-grid">
+      <!-- Profile Card -->
+      <div class="dashboard-card profile-card" @fadeIn>
+        <div class="card-header">
+          <h2 class="card-title">My Profile</h2>
+        </div>
+        <div class="card-content">
+          <div class="profile-avatar">
+            <div class="avatar-circle">
+              {{ employee?.full_name?.charAt(0) || "U" }}
             </div>
-            <div class="profile-details">
-              <div class="detail-item">
+            <div class="profile-info">
+              <h3 class="profile-name">
+                {{ employee?.full_name || "Loading..." }}
+              </h3>
+              <p class="profile-title">
+                {{ employee?.position || "Position" }}
+              </p>
+              <p class="profile-department">
+                {{ employee?.department || "Department" }}
+              </p>
+            </div>
+          </div>
+          <div class="profile-details">
+            <div class="detail-item">
+              <div class="d-flex">
+
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path
                     d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"
@@ -106,9 +111,10 @@
                   <span class="detail-value">{{
                     employee?.email || "N/A"
                   }}</span>
+                <hr>
                 </div>
               </div>
-              <div class="detail-item">
+              <div class="d-flex">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path
                     d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"
@@ -119,263 +125,255 @@
                   <span class="detail-value">{{
                     employee?.phone || "N/A"
                   }}</span>
+                                  <hr>
+
                 </div>
-                <div class="detail-content">
-                  <span class="detail-label">Id</span>
-                  <span class="detail-value">{{
-                    employee?.id || "N/A"
-                  }}</span>
-                </div>
+              </div>
+              
+              <div class="detail-content">
+                <span class="detail-label">Id</span>
+                <span class="detail-value">{{ employee?.id || "N/A" }}</span>
+                
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Time Tracking Card -->
-        <div class="dashboard-card time-card" @fadeIn>
-          <div class="card-header">
-            <h2 class="card-title">Time Tracking</h2>
+      <!-- Time Tracking Card -->
+      <div class="dashboard-card time-card" @fadeIn>
+        <div class="card-header">
+          <h2 class="card-title">Time Tracking</h2>
+        </div>
+        <div class="card-content">
+          <!-- Current Time Display -->
+          <div class="current-time-display">
+            <span class="time-circle">
+              <img
+                *ngIf="employee?.login_photo"
+                [src]="'http://localhost:3000' + employee.login_photo"
+                alt="Login Photo"
+              />
+            </span>
           </div>
-          <div class="card-content">
-            <!-- Current Time Display -->
-            <div class="current-time-display">
-              <span class="time-circle">
-                <img
-                  *ngIf="employee?.login_photo"
-                  [src]="'http://localhost:3000' + employee.login_photo"
-                  alt="Login Photo"
-                />
+
+          <!-- Clock Actions -->
+          <div class="clock-actions">
+            <button
+              class="clock-btn clock-in-btn"
+              (click)="clockIn()"
+              [disabled]="isClockedIn || loading"
+              [class.disabled]="isClockedIn || loading"
+            >
+              <span class="btn-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                  />
+                </svg>
               </span>
-            </div>
+              <span class="btn-text">Check In</span>
+            </button>
 
-            <!-- Clock Actions -->
-            <div class="clock-actions">
-              <button
-                class="clock-btn clock-in-btn"
-                (click)="clockIn()"
-                [disabled]="isClockedIn || loading"
-                [class.disabled]="isClockedIn || loading"
-              >
-                <span class="btn-icon">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-                    />
-                  </svg>
-                </span>
-                <span class="btn-text">Check In</span>
-              </button>
-
-              <button
-                class="clock-btn clock-out-btn"
-                (click)="clockOut()"
-                [disabled]="!isClockedIn || loading"
-                [class.disabled]="!isClockedIn || loading"
-              >
-                <span class="btn-icon">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-                    />
-                  </svg>
-                </span>
-                <span class="btn-text">Check Out</span>
-              </button>
-            </div>
-
-            <!-- Active Session -->
-            <div *ngIf="activeRecord" class="active-session" @slideIn>
-              <div class="session-header">
-                <span class="session-badge">Active Session</span>
-                <span class="session-duration">{{ elapsedTime }}</span>
-              </div>
-              <div class="session-details">
-                <div class="session-time">
-                  <span>Clock In:</span>
-                  <strong>{{ formatDateTime(activeRecord.clock_in) }}</strong>
-                </div>
-                <div class="session-progress">
-                  <div class="progress-bar">
-                    <div class="progress-fill"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <button
+              class="clock-btn clock-out-btn"
+              (click)="clockOut()"
+              [disabled]="!isClockedIn || loading"
+              [class.disabled]="!isClockedIn || loading"
+            >
+              <span class="btn-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                  />
+                </svg>
+              </span>
+              <span class="btn-text">Check Out</span>
+            </button>
           </div>
-        </div>
 
-        <!-- Recent Activity Card -->
-        <div class="dashboard-card activity-card" @fadeIn>
-          <div class="card-header">
-            <h2 class="card-title">Recent Activity</h2>
-            <span class="card-badge">{{ clockRecords.length }} Records</span>
-          </div>
-          <div class="card-content">
-            <div class="activity-list">
-              <div *ngFor="let record of clockRecords" class="activity-item">
-                <div class="activity-date">
-                  <span class="date-day">{{
-                    formatDate(record.clock_in)
-                  }}</span>
-                  <span class="date-time">{{
-                    formatTime(record.clock_in)
-                  }}</span>
-                </div>
-                <div class="activity-info">
-                  <div class="activity-status">
-                    <span
-                      class="status-badge"
-                      [class.active]="!record.clock_out"
-                    >
-                      {{ record.clock_out ? "Completed" : "Active" }}
-                    </span>
-                  </div>
-                  <div class="activity-times">
-                    <div class="time-entry">
-                      <span>Clock In</span>
-                      <strong>{{ formatTime(record.clock_in) }}</strong>
-                    </div>
-                    <div class="time-entry">
-                      <span>Clock Out</span>
-                      <strong>{{
-                        record.clock_out
-                          ? formatTime(record.clock_out)
-                          : "--:--"
-                      }}</strong>
-                    </div>
-                  </div>
-                  <div class="activity-duration">
-                    <span>Duration:</span>
-                    <strong>{{
-                      record.clock_out
-                        ? calculateDuration(record.clock_in, record.clock_out)
-                        : "In Progress"
-                    }}</strong>
-                  </div>
-                </div>
-              </div>
-
-              <div *ngIf="clockRecords.length === 0" class="empty-state">
-                <div class="empty-icon">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-                    />
-                  </svg>
-                </div>
-                <p>No clock records found</p>
-                <small>Clock in to start tracking your time</small>
-              </div>
+          <!-- Active Session -->
+          <div *ngIf="activeRecord" class="active-session" @slideIn>
+            <div class="session-header">
+              <span class="session-badge">Active Session</span>
+              <span class="session-duration">{{ elapsedTime }}</span>
             </div>
-          </div>
-        </div>
-
-        <!-- Stats Overview -->
-        <div class="dashboard-card stats-card" @fadeIn>
-          <div class="card-header">
-            <h2 class="card-title">Work Summary</h2>
-          </div>
-          <div class="card-content">
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-icon today">
-                      <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                          d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 5h-2v6l5 3 .75-1.23L13 11V7z"
-                        />
-                      </svg>
-                    </div>
-                    <div class="stat-content">
-                      <span class="stat-value">{{ getTodayTotalTime() }}</span>
-                      <span class="stat-label">Today's Work Time</span>
-                    </div>
-                  </div>
-                  
-              <div class="stat-item">
-                <div class="stat-icon today">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
-                    />
-                  </svg>
-                </div>
-                <div class="stat-content">
-                  <span class="stat-value">{{ getTodayRecords() }}</span>
-                  <span class="stat-label">Today's Records</span>
-                </div>
+            <div class="session-details">
+              <div class="session-time">
+                <span>Clock In:</span>
+                <strong>{{ formatDateTime(activeRecord.clock_in) }}</strong>
               </div>
-              <div class="stat-item">
-                <div class="stat-icon hours">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"
-                    />
-                  </svg>
-                </div>
-                <div class="stat-content">
-                  <span class="stat-value">{{ getWeeklyHours() }}h</span>
-                  <span class="stat-label">This Week</span>
-                </div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-icon active">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
-                    />
-                  </svg>
-                </div>
-                <div class="stat-content">
-                  <span class="stat-value">{{
-                    isClockedIn ? "Yes" : "No"
-                  }}</span>
-                  <span class="stat-label">Currently Clocked In</span>
-                </div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-icon average">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4-2h2v12h-2z"
-                    />
-                  </svg>
-                </div>
-                <div class="stat-content">
-                  <span class="stat-value">{{ getAverageHours() }}h</span>
-                  <span class="stat-label">Daily Average</span>
+              <div class="session-progress">
+                <div class="progress-bar">
+                  <div class="progress-fill"></div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </main>
 
-    <!-- Mobile Navigation -->
-    <nav class="mobile-nav">
-      <button class="nav-item" [class.active]="true">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path
-            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-          />
-        </svg>
-        <span>Dashboard</span>
-      </button>
-      <button class="nav-item">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path
-            d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
-          />
-        </svg>
-        <span>Calendar</span>
-      </button>
-      <button class="nav-item" (click)="logout()">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path
-            d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
-          />
-        </svg>
-        <span>Logout</span>
-      </button>
-    </nav>
-  </div>
+      <!-- Recent Activity Card -->
+      <div class="dashboard-card activity-card" @fadeIn>
+        <div class="card-header">
+          <h2 class="card-title">Recent Activity</h2>
+          <span class="card-badge">{{ clockRecords.length }} Records</span>
+        </div>
+        <div class="card-content">
+          <div class="activity-list">
+            <div *ngFor="let record of clockRecords" class="activity-item">
+              <div class="activity-date">
+                <span class="date-day">{{ formatDate(record.clock_in) }}</span>
+                <span class="date-time">{{ formatTime(record.clock_in) }}</span>
+              </div>
+              <div class="activity-info">
+                <div class="activity-status">
+                  <span class="status-badge" [class.active]="!record.clock_out">
+                    {{ record.clock_out ? "Completed" : "Active" }}
+                  </span>
+                </div>
+                <div class="activity-times">
+                  <div class="time-entry">
+                    <span>Clock In</span>
+                    <strong>{{ formatTime(record.clock_in) }}</strong>
+                  </div>
+                  <div class="time-entry">
+                    <span>Clock Out</span>
+                    <strong>{{
+                      record.clock_out ? formatTime(record.clock_out) : "--:--"
+                    }}</strong>
+                  </div>
+                </div>
+                <div class="activity-duration">
+                  <span>Duration:</span>
+                  <strong>{{
+                    record.clock_out
+                      ? calculateDuration(record.clock_in, record.clock_out)
+                      : "In Progress"
+                  }}</strong>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="clockRecords.length === 0" class="empty-state">
+              <div class="empty-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                  />
+                </svg>
+              </div>
+              <p>No clock records found</p>
+              <small>Clock in to start tracking your time</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Overview -->
+      <div class="dashboard-card stats-card" @fadeIn>
+        <div class="card-header">
+          <h2 class="card-title">Work Summary</h2>
+        </div>
+        <div class="card-content">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-icon today">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 5h-2v6l5 3 .75-1.23L13 11V7z"
+                  />
+                </svg>
+              </div>
+              <div class="stat-content">
+                <span class="stat-value">{{ getTodayTotalTime() }}</span>
+                <span class="stat-label">Today's Work Time</span>
+              </div>
+            </div>
+
+            <div class="stat-item">
+              <div class="stat-icon today">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
+                  />
+                </svg>
+              </div>
+              <div class="stat-content">
+                <span class="stat-value">{{ getTodayRecords() }}</span>
+                <span class="stat-label">Today's Records</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-icon hours">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"
+                  />
+                </svg>
+              </div>
+              <div class="stat-content">
+                <span class="stat-value">{{ getWeeklyHours() }}h</span>
+                <span class="stat-label">This Week</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-icon active">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                  />
+                </svg>
+              </div>
+              <div class="stat-content">
+                <span class="stat-value">{{ isClockedIn ? "Yes" : "No" }}</span>
+                <span class="stat-label">Currently Clocked In</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-icon average">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4-2h2v12h-2z"
+                  />
+                </svg>
+              </div>
+              <div class="stat-content">
+                <span class="stat-value">{{ getAverageHours() }}h</span>
+                <span class="stat-label">Daily Average</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Mobile Navigation -->
+  <nav class="mobile-nav">
+    <button class="nav-item" [class.active]="true">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path
+          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+        />
+      </svg>
+      <span>Dashboard</span>
+    </button>
+    <button class="nav-item">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path
+          d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
+        />
+      </svg>
+      <span>Calendar</span>
+    </button>
+    <button class="nav-item" (click)="logout()">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path
+          d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
+        />
+      </svg>
+      <span>Logout</span>
+    </button>
+  </nav>
+</div>
