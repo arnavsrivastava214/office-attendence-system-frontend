@@ -5,6 +5,15 @@ import { AuthService } from '../../../services/auth.service';
 import { EmployeeService } from '../../../services/employee.service';
 import { ClockService } from '../../../services/clock.service';
 import { Router, RouterLink, RouterModule } from '@angular/router';
+interface DayWiseAttendance {
+  employee: string;
+  department: string;
+  date: string;
+  firstIn: string;
+  lastOut: string | null;
+  totalMs: number;
+}
+
 @Component({
   selector: 'app-admin-dashboard',
   imports: [CommonModule, FormsModule, RouterLink, RouterModule],
@@ -223,6 +232,54 @@ export class AdminDashboardComponent {
     const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
     return `${hours}h ${minutes}m`;
   }
+
+  getDayWiseAttendance(): DayWiseAttendance[] {
+    const map: { [key: string]: DayWiseAttendance } = {};
+  
+    for (const record of this.clockRecords) {
+      if (!record.clock_in) continue;
+  
+      const date = new Date(record.clock_in).toLocaleDateString();
+      const key = `${record.employee_id}_${date}`;
+  
+      if (!map[key]) {
+        map[key] = {
+          employee: record.full_name,
+          department: record.department,
+          date,
+          firstIn: record.clock_in,
+          lastOut: record.clock_out,
+          totalMs: 0
+        };
+      }
+  
+      const start = new Date(record.clock_in).getTime();
+      const end = record.clock_out
+        ? new Date(record.clock_out).getTime()
+        : Date.now();
+  
+      map[key].totalMs += end - start;
+  
+      if (new Date(record.clock_in) < new Date(map[key].firstIn)) {
+        map[key].firstIn = record.clock_in;
+      }
+  
+      if (
+        record.clock_out &&
+        (!map[key].lastOut ||
+          new Date(record.clock_out) > new Date(map[key].lastOut))
+      ) {
+        map[key].lastOut = record.clock_out;
+      }
+    }
+  
+    return Object.values(map);
+  }
+  
+
+
+  
+  
   
   
 }

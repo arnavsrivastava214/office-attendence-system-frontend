@@ -150,8 +150,8 @@
     </div>
 
     <div *ngIf="currentView === 'attendance'" class="fade-in">
-      <h2 class="fw-bold mb-4">Attendance Records</h2>
-
+      <h2 class="fw-bold mb-4">Day-Wise Attendance</h2>
+    
       <div class="card">
         <div class="card-body">
           <div class="table-responsive">
@@ -161,31 +161,27 @@
                   <th>Employee</th>
                   <th>Department</th>
                   <th>Date</th>
-                  <th>Clock In</th>
-                  <th>Clock Out</th>
-                  <th>Duration</th>
+                  <th>First In</th>
+                  <th>Last Out</th>
+                  <th>Total Duration</th>
                 </tr>
               </thead>
+    
               <tbody>
-                <tr *ngFor="let record of clockRecords">
-                  <td>{{ record.employees?.full_name }}</td>
-                  <td>{{ record.employees?.department || "N/A" }}</td>
-                  <td>{{ formatDate(record.clock_in) }}</td>
-                  <td>{{ formatTime(record.clock_in) }}</td>
+                <tr *ngFor="let day of getDayWiseAttendance()">
+                  <td>{{ day.employee }}</td>
+                  <td>{{ day.department }}</td>
+                  <td>{{ day.date }}</td>
+                  <td>{{ formatTime(day.firstIn) }}</td>
                   <td>
-                    {{
-                      record.clock_out ? formatTime(record.clock_out) : "Active"
-                    }}
+                    {{ day.lastOut ? formatTime(day.lastOut) : 'Active' }}
                   </td>
-                  <td>
-                    {{
-                      record.clock_out
-                        ? calculateDuration(record.clock_in, record.clock_out)
-                        : "-"
-                    }}
+                  <td class="fw-semibold">
+                    {{ formatTotalDuration(day.totalMs) }}
                   </td>
                 </tr>
-                <tr *ngIf="clockRecords.length === 0">
+    
+                <tr *ngIf="getDayWiseAttendance().length === 0">
                   <td colspan="6" class="text-center text-muted">
                     No attendance records found
                   </td>
@@ -196,6 +192,7 @@
         </div>
       </div>
     </div>
+    
 
     <div
       *ngIf="showModal"

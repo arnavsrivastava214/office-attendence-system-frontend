@@ -200,6 +200,43 @@ export class LoginLocationsComponent {
       this.filteredLocations.length
     );
   }
+  getDayWiseLocations() {
+    const map: {
+      [date: string]: {
+        date: string;
+        logins: any[];
+      };
+    } = {};
+  
+    for (const loc of this.filteredLocations) {
+      const date = new Date(loc.time).toLocaleDateString();
+  
+      if (!map[date]) {
+        map[date] = {
+          date,
+          logins: []
+        };
+      }
+  
+      map[date].logins.push(loc);
+    }
+  
+    return Object.values(map);
+  }
+  
+  getFirstLogin(logins: any[]): string {
+    const sorted = [...logins].sort(
+      (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime()
+    );
+    return this.formatTime(sorted[0].time);
+  }
+  
+  getLastLogin(logins: any[]): string {
+    const sorted = [...logins].sort(
+      (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()
+    );
+    return this.formatTime(sorted[0].time);
+  }
   
   
 }
