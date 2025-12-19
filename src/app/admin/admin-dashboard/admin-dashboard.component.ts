@@ -190,4 +190,39 @@ export class AdminDashboardComponent {
   isNormalEmployee(emp: any): boolean {
     return emp.role !== 'admin' && emp.role !== 'hr';
   }
+
+  getDayWiseWorkingTime() {
+    const dayMap: {
+      [date: string]: {
+        date: string;
+        totalMs: number;
+      };
+    } = {};
+  
+    for (const record of this.employeeClockRecords) {
+      if (!record.clock_in || !record.clock_out) continue;
+  
+      const date = new Date(record.clock_in).toLocaleDateString();
+  
+      const start = new Date(record.clock_in).getTime();
+      const end = new Date(record.clock_out).getTime();
+      const duration = end - start;
+  
+      if (!dayMap[date]) {
+        dayMap[date] = { date, totalMs: 0 };
+      }
+  
+      dayMap[date].totalMs += duration;
+    }
+  
+    return Object.values(dayMap);
+  }
+
+  formatTotalDuration(ms: number): string {
+    const hours = Math.floor(ms / (1000 * 60 * 60));
+    const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+    return `${hours}h ${minutes}m`;
+  }
+  
+  
 }

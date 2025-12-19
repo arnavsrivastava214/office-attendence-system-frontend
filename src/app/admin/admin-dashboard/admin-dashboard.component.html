@@ -6,7 +6,10 @@
         style="height: 61px; width: 100"
         alt=""
       />
-      <a class="navbar-brand fw-bold">Admin Dashboard</a>
+      <a class="navbar-brand fw-bold" routerLink="/admin/login"
+        >Admin Dashboard</a
+      >
+
       <div>
         <button class="btn btn-light me-2" (click)="showView('employees')">
           Employees
@@ -14,7 +17,9 @@
         <button class="btn btn-light me-2" (click)="showView('attendance')">
           Attendance
         </button>
-        <button class="btn btn-outline-danger" (click)="logout()">Logout</button>
+        <button class="btn btn-outline-danger" (click)="logout()">
+          Logout
+        </button>
       </div>
     </div>
   </nav>
@@ -130,7 +135,6 @@
                         View Locations
                       </button>
                     </td>
-                    
                   </ng-container>
                 </tr>
                 <tr *ngIf="employees.length === 0">
@@ -279,7 +283,6 @@
                   required
                 >
                   <option value="employee">Employee</option>
-                  <option value="admin">Admin</option>
                 </select>
               </div>
             </form>
@@ -403,6 +406,31 @@
                   </table>
                 </div>
               </div>
+            </div>
+            <hr />
+            <h6 class="fw-bold mb-3 text-dark" style="color: black;">Total Working Time (Day Wise)</h6>
+
+            <div class="table-responsive">
+              <table class="table table-bordered table-sm">
+                <thead class="table-light">
+                  <tr>
+                    <th>Date</th>
+                    <th>Total Working Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let day of getDayWiseWorkingTime()">
+                    <td>{{ day.date }}</td>
+                    <td>{{ formatTotalDuration(day.totalMs) }}</td>
+                  </tr>
+
+                  <tr *ngIf="getDayWiseWorkingTime().length === 0">
+                    <td colspan="2" class="text-center text-muted">
+                      No attendance data found
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
           <div class="modal-footer">
