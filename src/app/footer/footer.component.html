@@ -1,0 +1,113 @@
+<footer class="helixson-footer">
+    <div class="footer-container">
+      
+      <!-- Main Footer Content -->
+      <div class="footer-content">
+        
+        <!-- Company Info Section -->
+        <div class="footer-section company-info">
+          <div class="company-brand">
+            <h2 class="company-name">Helixson <span class="highlight">Global</span></h2>
+            <p class="company-tagline">{{ tagline }}</p>
+          </div>
+          <p class="company-description">
+            We are a premier digital marketing agency specializing in data-driven strategies, 
+            innovative solutions, and measurable results for businesses worldwide.
+          </p>
+          
+          <!-- Social Media Links -->
+          <div class="social-links">
+            <a 
+              *ngFor="let link of socialLinks; trackBy: trackBySocialLink"
+              [href]="link.url" 
+              [attr.aria-label]="link.label"
+              class="social-link"
+            >
+              <i [class]="link.icon"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Quick Links Section -->
+        <div class="footer-section quick-links">
+          <h3 class="section-title">Quick Links</h3>
+          <ul class="links-list">
+            <li *ngFor="let link of quickLinks; trackBy: trackByQuickLink">
+              <a [href]="link.url" class="footer-link">
+                <i class="fas fa-chevron-right"></i>
+                {{ link.label }}
+              </a>
+            </li>
+          </ul>
+        </div>
+        
+        <!-- Contact Info Section -->
+        <div class="footer-section contact-info">
+          <h3 class="section-title">Contact Us</h3>
+          <ul class="contact-list">
+            <li *ngFor="let info of contactInfo; trackBy: trackByContactInfo" class="contact-item">
+              <i [class]="info.icon"></i>
+              <span>{{ info.text }}</span>
+            </li>
+          </ul>
+        </div>
+        
+        <!-- Newsletter Section -->
+        <div class="footer-section newsletter">
+          <h3 class="section-title">Stay Updated</h3>
+          <p class="newsletter-description">
+            Subscribe to our newsletter for the latest digital marketing insights and trends.
+          </p>
+          
+          <form (ngSubmit)="subscribeNewsletter()" class="newsletter-form" #newsletterForm="ngForm">
+            <div class="form-group">
+              <input 
+                type="email" 
+                [(ngModel)]="newsletterEmail"
+                name="newsletterEmail"
+                placeholder="Enter your email address"
+                class="email-input"
+                required
+                aria-label="Email address for newsletter subscription"
+              >
+              <button type="submit" class="subscribe-btn" aria-label="Subscribe to newsletter">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+            
+            <div *ngIf="subscriptionMessage" 
+                 [class]="isSubscribed ? 'success-message' : 'error-message'"
+                 class="subscription-message">
+              {{ subscriptionMessage }}
+            </div>
+            
+            <p class="privacy-note">
+              <i class="fas fa-lock"></i>
+              We respect your privacy. Unsubscribe at any time.
+            </p>
+          </form>
+        </div>
+        
+      </div>
+      
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <div class="footer-bottom-content">
+          <div class="copyright">
+            <p>&copy; {{ currentYear }} {{ companyName }}. All rights reserved.</p>
+          </div>
+          
+          <div class="legal-links">
+            <a 
+              *ngFor="let link of legalLinks; trackBy: trackByQuickLink"
+              [href]="link.url" 
+              class="legal-link"
+            >
+              {{ link.label }}
+            </a>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </footer>

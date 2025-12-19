@@ -1,15 +1,16 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterModule } from '@angular/router';
 import { filter, Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { EmployeeService } from '../../../services/employee.service';
 import { ClockService } from '../../../services/clock.service';
 import { CommonModule } from '@angular/common';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { FooterComponent } from "../../footer/footer.component";
 
 @Component({
   selector: 'app-employee-dashboard',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink, RouterModule, FooterComponent] ,
   templateUrl: './employee-dashboard.component.html',
   styleUrl: './employee-dashboard.component.scss',
   animations: [
