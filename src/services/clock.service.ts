@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from './auth.service';
+import { environment } from '../environment/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClockService {
 
-  private apiUrl = 'http://localhost:3000/api/clock-records';
+  private apiUrl = `${environment.apiUrl}/api`;
 
   constructor(
     private http: HttpClient,
