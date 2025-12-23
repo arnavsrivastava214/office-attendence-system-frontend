@@ -7,7 +7,7 @@ import { CommonModule, NgFor } from '@angular/common';
   selector: 'app-login-locations',
   imports: [NgFor, CommonModule, RouterModule],
   templateUrl: './login-locations.component.html',
-  styleUrl: './login-locations.component.scss'
+  styleUrl: './login-locations.component.scss',
 })
 export class LoginLocationsComponent {
   employeeId = '';
@@ -18,8 +18,14 @@ export class LoginLocationsComponent {
   currentPage = 0;
   itemsPerPage = 10;
   errorMessage = '';
+  showDayWiseModal = false;
+  selectedDay: any = null;
+  selectedDate: string | null = null;
 
-  constructor(private route: ActivatedRoute, private authService: AuthService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.employeeId = this.route.snapshot.paramMap.get('id')!;
@@ -28,28 +34,29 @@ export class LoginLocationsComponent {
 
   loadLoginLocations() {
     this.errorMessage = '';
-    this.authService.getLoginLocations(this.employeeId)
-      .subscribe({
-        next: (res) => {
-          const rawData = JSON.parse(res.login_locations) || [];
-          // Sort by time descending (most recent first)
-          this.locations = rawData.sort((a: any, b: any) => 
+    this.authService.getLoginLocations(this.employeeId).subscribe({
+      next: (res) => {
+        const rawData = JSON.parse(res.login_locations) || [];
+        // Sort by time descending (most recent first)
+        this.locations = rawData.sort(
+          (a: any, b: any) =>
             new Date(b.time).getTime() - new Date(a.time).getTime()
-          );
-          this.filteredLocations = [...this.locations];
-        },
-        error: (err) => {
-          console.error(err);
-          this.errorMessage = 'Failed to load login locations. Please try again.';
-        }
-      });
+        );
+        this.filteredLocations = [...this.locations];
+      },
+      error: (err) => {
+        console.error(err);
+        this.errorMessage = 'Failed to load login locations. Please try again.';
+      },
+    });
   }
 
   filterLocations(event: any) {
     this.searchTerm = event.target.value.toLowerCase();
-    this.filteredLocations = this.locations.filter(loc => 
-      loc.location.toLowerCase().includes(this.searchTerm) ||
-      loc.time.toLowerCase().includes(this.searchTerm)
+    this.filteredLocations = this.locations.filter(
+      (loc) =>
+        loc.location.toLowerCase().includes(this.searchTerm) ||
+        loc.time.toLowerCase().includes(this.searchTerm)
     );
     this.currentPage = 0;
   }
@@ -62,13 +69,13 @@ export class LoginLocationsComponent {
 
   getMostCommonArea(): string {
     if (this.locations.length === 0) return 'N/A';
-    
+
     const areaCounts: { [key: string]: number } = {};
-    this.locations.forEach(loc => {
+    this.locations.forEach((loc) => {
       const area = this.extractArea(loc.location);
       areaCounts[area] = (areaCounts[area] || 0) + 1;
     });
-    
+
     let mostCommon = '';
     let maxCount = 0;
     for (const [area, count] of Object.entries(areaCounts)) {
@@ -77,15 +84,16 @@ export class LoginLocationsComponent {
         maxCount = count;
       }
     }
-    
+
     return mostCommon || 'N/A';
   }
 
   getAverageAccuracy(): string {
     if (this.locations.length === 0) return 'N/A';
-    
-    const sum = this.locations.reduce((acc, loc) => 
-      acc + parseFloat(loc.accuracy || 0), 0
+
+    const sum = this.locations.reduce(
+      (acc, loc) => acc + parseFloat(loc.accuracy || 0),
+      0
     );
     return (sum / this.locations.length).toFixed(1);
   }
@@ -105,7 +113,7 @@ export class LoginLocationsComponent {
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   }
 
@@ -114,7 +122,7 @@ export class LoginLocationsComponent {
     return date.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true
+      hour12: true,
     });
   }
 
@@ -142,7 +150,7 @@ export class LoginLocationsComponent {
       navigator.share({
         title: 'Login Location',
         text: `Location: ${location.location}\nCoordinates: ${location.latitude}, ${location.longitude}`,
-        url: `https://www.google.com/maps?q=${location.latitude},${location.longitude}`
+        url: `https://www.google.com/maps?q=${location.latitude},${location.longitude}`,
       });
     } else {
       this.copyCoordinates(location);
@@ -150,26 +158,31 @@ export class LoginLocationsComponent {
   }
 
   getPageNumbers(): number[] {
-    const totalPages = Math.ceil(this.filteredLocations.length / this.itemsPerPage);
+    const totalPages = Math.ceil(
+      this.filteredLocations.length / this.itemsPerPage
+    );
     const pages = [];
     const maxPages = 5;
-    
+
     let start = Math.max(0, this.currentPage - Math.floor(maxPages / 2));
     let end = Math.min(totalPages, start + maxPages);
-    
+
     if (end - start < maxPages) {
       start = Math.max(0, end - maxPages);
     }
-    
+
     for (let i = start; i < end; i++) {
       pages.push(i + 1);
     }
-    
+
     return pages;
   }
 
   nextPage() {
-    if ((this.currentPage + 1) * this.itemsPerPage < this.filteredLocations.length) {
+    if (
+      (this.currentPage + 1) * this.itemsPerPage <
+      this.filteredLocations.length
+    ) {
       this.currentPage++;
     }
   }
@@ -193,7 +206,7 @@ export class LoginLocationsComponent {
   get startEntry(): number {
     return this.currentPage * this.itemsPerPage + 1;
   }
-  
+
   get endEntry(): number {
     return Math.min(
       (this.currentPage + 1) * this.itemsPerPage,
@@ -207,36 +220,84 @@ export class LoginLocationsComponent {
         logins: any[];
       };
     } = {};
-  
+
     for (const loc of this.filteredLocations) {
       const date = new Date(loc.time).toLocaleDateString();
-  
+
       if (!map[date]) {
         map[date] = {
           date,
-          logins: []
+          logins: [],
         };
       }
-  
+
       map[date].logins.push(loc);
     }
-  
+
     return Object.values(map);
   }
-  
+
   getFirstLogin(logins: any[]): string {
     const sorted = [...logins].sort(
       (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime()
     );
     return this.formatTime(sorted[0].time);
   }
-  
+
   getLastLogin(logins: any[]): string {
     const sorted = [...logins].sort(
       (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()
     );
     return this.formatTime(sorted[0].time);
   }
+
+  getTodayLoginCount(): number {
+    const today = new Date().toLocaleDateString();
+    return this.locations.filter(
+      (loc) => new Date(loc.time).toLocaleDateString() === today
+    ).length;
+  }
+
+  openDayWiseModal(day: any) {
+    this.selectedDay = day;
+    this.showDayWiseModal = true;
+  }
+
+  closeDayWiseModal() {
+    this.showDayWiseModal = false;
+    this.selectedDay = null;
+  }
+  getDayWiseLoginCounts() {
+    const map: { [date: string]: number } = {};
+  
+    for (const loc of this.locations) {
+      const date = new Date(loc.time).toLocaleDateString();
+      map[date] = (map[date] || 0) + 1;
+    }
+  
+    return Object.entries(map)
+      .map(([date, count]) => ({ date, count }))
+      .sort(
+        (a, b) =>
+          new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
+  }
+
+  filterByDate(date: string) {
+    this.selectedDate = date;
+  
+    this.filteredLocations = this.locations.filter(loc =>
+      new Date(loc.time).toLocaleDateString() === date
+    );
+  
+    this.currentPage = 0;
+  }
+
+  clearDateFilter() {
+    this.selectedDate = null;
+    this.filteredLocations = [...this.locations];
+  }
+  
   
   
 }
