@@ -196,34 +196,58 @@ export class LoginComponent implements AfterViewInit {
     }
   }
 
-  async getLocation() {
+  async getLocation(): Promise<void> {
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported by this browser.');
+      this.errorMessage = 'Geolocation not supported';
       return;
     }
   
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        this.latitude = position.coords.latitude;
-        this.longitude = position.coords.longitude;
-        this.accuracy = position.coords.accuracy;
+    // Step 1: FAST attempt (PC friendly)
+    try {
+      await this.getLocationFast();
+      return;
+    } catch (err) {
+      console.warn('Fast location failed, trying high accuracy...');
+    }
   
-        this.locationCaptured = true;
-  
-        this.errorMessage =  `✅ Location Captured\nLat: ${this.latitude}\nLng: ${this.longitude}\nAccuracy: ${this.accuracy}m`
-        ;
-      },
-      (error) => {
-         this.errorMessage = '❌ Failed to get location';
-        console.error(error);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 0
-      }
-    );
+    // Step 2: HIGH accuracy fallback (Mobile GPS)
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.latitude = position.coords.latitude;
+          this.longitude = position.coords.longitude;
+          this.accuracy = position.coords.accuracy;
+          this.locationCaptured = true;
+          resolve();
+        },
+        (error) => {
+          console.error('Location error:', error);
+          this.errorMessage = this.getLocationErrorMessage(error);
+          reject(error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 20000,
+          maximumAge: 0
+        }
+      );
+    });
   }
+
+  getLocationErrorMessage(error: GeolocationPositionError): string {
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        return '❌ Location permission denied. Please allow location access.';
+      case error.POSITION_UNAVAILABLE:
+        return '❌ Location unavailable. Check GPS or network.';
+      case error.TIMEOUT:
+        return '❌ Location request timed out. Try again.';
+      default:
+        return '❌ Failed to get location.';
+    }
+  }
+  
+  
   getLocationFast() {
   return new Promise<void>((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(
