@@ -1,29 +1,18 @@
-import { Injectable } from '@angular/core';
-import {
-  HttpEvent,
-  HttpHandlerFn,
-  HttpInterceptorFn,
-  HttpRequest
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter, withHashLocation } from '@angular/router';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
-export const authInterceptor: HttpInterceptorFn = (
-  req: HttpRequest<any>,
-  next: HttpHandlerFn
-): Observable<HttpEvent<any>> => {
+import { routes } from './app.routes';
+import { authInterceptor } from './interceptors/auth.interceptor';
 
-  const userId = localStorage.getItem('userId');
-  const userRole = localStorage.getItem('userRole');
-
-  if (userId) {
-    const authReq = req.clone({
-      setHeaders: {
-        'x-user-id': userId,
-        'x-user-role': userRole || 'employee'
-      }
-    });
-    return next(authReq);
-  }
-
-  return next(req);
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes, withHashLocation()),
+    provideHttpClient(
+      withInterceptors([authInterceptor])
+    ),
+    provideAnimations(),
+  ]
 };
