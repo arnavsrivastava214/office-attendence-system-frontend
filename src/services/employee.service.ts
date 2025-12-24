@@ -36,7 +36,7 @@ export class EmployeeService {
   }
 
   /* ================= UPDATE EMPLOYEE (ADMIN) ================= */
-  async updateEmployee(id: string, updates: any): Promise<any> {
+  async updateEmployee(id: any, updates: any): Promise<any> {
     console.log('updateEmployee',id);
     
     return await firstValueFrom(
@@ -45,7 +45,7 @@ export class EmployeeService {
   }
 
   /* ================= DELETE EMPLOYEE (ADMIN) ================= */
-  async deleteEmployee(id: string): Promise<any> {
+  async deleteEmployee(id: any): Promise<any> {
     console.log('deleteEmployee',id);
 
     return await firstValueFrom(
