@@ -149,7 +149,10 @@ export class AdminDashboardComponent {
     }
 
     try {
-      await this.employeeService.deleteEmployee(id);
+
+      console.log("madarcg=hod",id);
+      
+      // await this.employeeService.deleteEmployee(id);
       this.successMessage = 'Employee deleted successfully!';
       await this.loadEmployees();
     } catch (error: any) {
