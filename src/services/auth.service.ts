@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHandler, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import { environment } from '../environment/environment.prod';
@@ -8,6 +8,29 @@ import { environment } from '../environment/environment.prod';
   providedIn: 'root',
 })
 export class AuthService {
+
+
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+
+    const userId = localStorage.getItem('userId');
+    const userRole = localStorage.getItem('userRole');
+
+    if (userId) {
+      const authReq = req.clone({
+        setHeaders: {
+          'x-user-id': userId,
+          'x-user-role': userRole || 'employee'
+        }
+      });
+
+      return next.handle(authReq);
+    }
+
+    return next.handle(req);
+  }
   private apiUrl = `${environment.apiUrl}/api`;
 
   private currentUserSubject = new BehaviorSubject<any>(null);
