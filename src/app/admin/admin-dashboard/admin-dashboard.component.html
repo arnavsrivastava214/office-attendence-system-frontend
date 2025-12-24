@@ -88,12 +88,12 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let emp of employees">
-                  <ng-container *ngIf="isNormalEmployee(emp)">
+                <ng-container *ngFor="let emp of employees">
+                  <tr *ngIf="isNormalEmployee(emp)">
                     <td>{{ emp.full_name }}</td>
                     <td>{{ emp.email }}</td>
-                    <td>{{ emp.department || "N/A" }}</td>
-                    <td>{{ emp.position || "N/A" }}</td>
+                    <td>{{ emp.department || 'N/A' }}</td>
+                    <td>{{ emp.position || 'N/A' }}</td>
                     <td>
                       <span
                         class="badge"
@@ -111,6 +111,7 @@
                       >
                         Edit
                       </button>
+                
                       <button
                         class="btn btn-sm btn-danger"
                         (click)="deleteEmployee(emp.id)"
@@ -121,22 +122,23 @@
                     </td>
                     <td>
                       <button
-                        class="btn btn-sm btn-info me-2"
+                        class="btn btn-sm btn-info"
                         (click)="viewEmployee(emp)"
                       >
-                        View Deatails
+                        View Details
                       </button>
                     </td>
                     <td>
                       <button
-                        class="btn btn-sm btn-info me-2"
+                        class="btn btn-sm btn-info"
                         [routerLink]="['/admin/employee-locations', emp.id]"
                       >
                         View Locations
                       </button>
                     </td>
-                  </ng-container>
-                </tr>
+                  </tr>
+                </ng-container>
+                
                 <tr *ngIf="employees.length === 0">
                   <td colspan="6" class="text-center text-muted">
                     No employees found

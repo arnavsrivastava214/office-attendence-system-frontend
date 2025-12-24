@@ -275,11 +275,9 @@ export class AdminDashboardComponent {
   
     return Object.values(map);
   }
-  
 
-
-  
-  
-  
+  get normalEmployees() {
+    return this.employees.filter(emp => this.isNormalEmployee(emp));
+  }
   
 }
