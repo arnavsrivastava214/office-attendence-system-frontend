@@ -21,6 +21,8 @@ export class EmployeeService {
 
   /* ================= EMPLOYEE BY ID (ADMIN) ================= */
   async getEmployeeById(id: string): Promise<any> {
+    console.log('firstValueFrom',id);
+
     return await firstValueFrom(
       this.http.get<any>(`${this.apiUrl}/${id}`)
     );
@@ -35,6 +37,8 @@ export class EmployeeService {
 
   /* ================= UPDATE EMPLOYEE (ADMIN) ================= */
   async updateEmployee(id: string, updates: any): Promise<any> {
+    console.log('updateEmployee',id);
+    
     return await firstValueFrom(
       this.http.put(`${this.apiUrl}/${id}`, updates)
     );
@@ -42,6 +46,8 @@ export class EmployeeService {
 
   /* ================= DELETE EMPLOYEE (ADMIN) ================= */
   async deleteEmployee(id: string): Promise<any> {
+    console.log('deleteEmployee',id);
+
     return await firstValueFrom(
       this.http.delete(`${this.apiUrl}/${id}`)
     );
