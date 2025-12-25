@@ -2,7 +2,7 @@
     "rewrites": [
       {
         "source": "/(.*)",
-        "destination": "/dist/office-attendence-system/index.html"
+        "destination": "/dist/office-attendence-system/browser/index.html"
       }
     ]
   }
