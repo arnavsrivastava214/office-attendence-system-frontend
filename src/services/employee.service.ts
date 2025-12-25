@@ -11,6 +11,8 @@ import { environment } from '../environment/environment.prod';
 export class EmployeeService {
 
   private apiUrl = `${environment.apiUrl}/api/employees`;
+  apiUrlforme = `${environment.apiUrl}/api`;
+
 
   constructor(
     private http: HttpClient,
@@ -37,15 +39,16 @@ export class EmployeeService {
     );
   }
 
-  /* ================= MY PROFILE ================= */
+
   async getMyProfile(): Promise<any> {
     return await firstValueFrom(
       this.http.get<any>(
-        `${this.apiUrl}/me`,
+        `${this.apiUrlforme}/me`,
         { headers: this.authService.getAuthHeaders() }
       )
     );
   }
+  
 
   /* ================= UPDATE EMPLOYEE (ADMIN) ================= */
   async updateEmployee(id: string, updates: any): Promise<any> {
