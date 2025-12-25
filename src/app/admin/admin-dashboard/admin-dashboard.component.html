@@ -85,6 +85,7 @@
                   <th>Actions</th>
                   <th>Work Details</th>
                   <th>Login Locations</th>
+                  <th>id</th>
                 </tr>
               </thead>
               <tbody>
@@ -136,6 +137,7 @@
                         View Locations
                       </button>
                     </td>
+                    <td>{{emp?.id}}</td>
                   </tr>
                 </ng-container>
                 
@@ -194,8 +196,6 @@
         </div>
       </div>
     </div>
-    
-
     <div
       *ngIf="showModal"
       class="modal fade show d-block"
